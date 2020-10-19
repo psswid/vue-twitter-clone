@@ -2,17 +2,30 @@
     <div class="user-profile">
         <div class="user-profile__user-panel">
             <h1 class="user-profile__username">@{{ user.username }}</h1>
+            <div class="user-profile__admin-badge" v-if="user.isAdmin">
+              Admin
+            </div>
+            
             <div class="user-profile__follower-count">
                 <strong>Followers: </strong> {{ followers }}
             </div>
+        </div>
+        <div class="user-profile__posts-wrapper">
+          <PostElement v-for="post in user.posts" :key="post.id" :username="user.username" :post="post" />
+          
         </div>
     </div>
 </template>
 
 <script>
 
+import PostElement from './PostElement';
+
 export default {
   name: 'UserProfile',
+  components: {
+    PostElement
+  },
   data() {
     return {
       followers: 0,
@@ -22,7 +35,17 @@ export default {
         firstName: "Roman",
         lastName: "Motopompa",
         email: "motopompa@gmail.com",
-        isAdmin: true
+        isAdmin: true,
+        posts: [
+          {
+            id: 1,
+            content: "lorem ipsum"
+          },
+          {
+            id: 2,
+            content: "Michał Białek kończył nocną zmianę..."
+          }
+        ],
       }
     }
   },
@@ -60,7 +83,7 @@ export default {
     padding: 50px 5%;
 }
 
-.user-user-profile__user-panel {
+.user-profile__user-panel {
     display: flex;
     flex-direction: column;
     margin-right: 50px;
@@ -68,6 +91,15 @@ export default {
     background-color: white;
     border-radius: 5px;
     border: 1px solid #dfe3e8;
+}
+
+.user-profile__admin-badge {
+  background: red;
+  color: white;
+  border-radius: 5px;
+  margin-right: auto;
+  padding: 0 10px;
+  font-weight: bold;
 }
 
 h1 {
