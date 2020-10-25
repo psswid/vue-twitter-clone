@@ -1,13 +1,13 @@
 <template>
      <form action="" class="create-post-panel" @submit.prevent="createNewPost" :class="{ '--exceeded': newPostCharacterCount > 180 }">
         <label for="newPost"><strong>New Post</strong> ({{ newPostCharacterCount }}/180)</label>
-        <textarea name="" id="newPost" cols="30" rows="10" v-model="newPostContent"></textarea>
+        <textarea name="" id="newPost" cols="30" rows="10" v-model="state.newPostContent"></textarea>
 
         <div class="create-post-panel__submit">
             <div class="create-post-type">
                 <label for="newPostType"><strong>Type</strong></label>
-                <select name="" id="newPostType" v-model="selectedTPostType">
-                <option :value="option.value" v-for="(option, index) in postTypes" :key="index">
+                <select name="" id="newPostType" v-model="state.selectedTPostType">
+                <option :value="option.value" v-for="(option, index) in state.postTypes" :key="index">
                     {{ option.name }}
                 </option>
                 </select>
@@ -20,10 +20,12 @@
 </template>
 
 <script>
+import { reactive, computed } from 'vue'
+
 export default {
     name: 'CreatePostPanel',
-    data() {
-        return {
+    setup(props, ctx) {
+        const state  = reactive({
             newPostContent: '',
             selectedPostType: 'instant',
 
@@ -37,21 +39,23 @@ export default {
                     name: 'Instant Post'
                 },
             ],
-        }
-    },
-    computed: {
-        newPostCharacterCount() {
-            return this.newPostContent.length;
-        }  
-    },
-    methods: {
-        createNewPost() {
-            if (this.newPostContent && this.selectedPostType !== 'draft') {
+        })
+
+        const newPostCharacterCount = computed(() => state.newPostContent.length);
+
+        function createNewPost() {
+            if (state.newPostContent && state.selectedPostType !== 'draft') {
 
                 /** Some axios backend post call */
-                this.$emit('add-post', this.newPostContent);
-                this.newPostContent = '';
+                ctx.emit('add-post', state.newPostContent);
+                state.newPostContent = '';
             }
+        }
+
+        return {
+            state,
+            newPostCharacterCount,
+            createNewPost
         }
     },
 }
