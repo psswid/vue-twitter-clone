@@ -9,6 +9,22 @@
             <div class="user-profile__follower-count">
                 <strong>Followers: </strong> {{ followers }}
             </div>
+            <form action="" class="user-profile__create-post" @submit.prevent="createNewPost">
+              <label for="newPost"><strong>New Post</strong></label>
+              <textarea name="" id="newPost" cols="30" rows="10" v-model="newPostContent"></textarea>
+
+              <div class="user-profile__create-post-type">
+                <label for="newPostType"><strong>Type</strong></label>
+                <select name="" id="newPostType" v-model="selectedTPostType">
+                  <option :value="option.value" v-for="(option, index) in postTypes" :key="index">
+                    {{ option.name }}
+                  </option>
+                </select>
+              </div>
+              <button>
+                Send post
+              </button>
+            </form>
         </div>
         <div class="user-profile__posts-wrapper">
           <PostElement 
@@ -34,6 +50,19 @@ export default {
   },
   data() {
     return {
+      newPostContent: '',
+      selectedPostType: 'instant',
+
+      postTypes: [
+        {
+          value: 'draft',
+          name: 'Draft'
+        },
+        {
+          value: 'instant',
+          name: 'Instant Post'
+        },
+      ],
       followers: 0,
       user: {
         id: 1,
@@ -75,11 +104,22 @@ export default {
       this.followers++;
     },
     toggleFavorite(id) {
-      
+
       /**
        * i.e. for axios call to backend for add favorite count etc.
        */
       console.log(`Favorited post #${id}`);
+    },
+    createNewPost() {
+      if (this.newPostContent && this.selectedPostType !== 'draft') {
+
+        /** Some axios backend post call */
+        this.user.posts.unshift({
+          id: this.user.posts.length + 1,
+          content: this.newPostContent
+        })
+        this.newPostContent = '';
+      }
     }
   },
   mounted() {
@@ -113,9 +153,22 @@ export default {
   margin-right: auto;
   padding: 0 10px;
   font-weight: bold;
+  margin-bottom: 10px;
 }
 
 h1 {
     margin: 0;
+}
+
+.user-profile__create-wrapper {
+  display: grid;
+  grid-gap: 10px;
+}
+
+.user-profile__create-post {
+  border-top: 1px solid black;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
 }
 </style>
