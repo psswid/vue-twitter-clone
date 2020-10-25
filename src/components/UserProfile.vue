@@ -11,7 +11,13 @@
             </div>
         </div>
         <div class="user-profile__posts-wrapper">
-          <PostElement v-for="post in user.posts" :key="post.id" :username="user.username" :post="post" />
+          <PostElement 
+            v-for="post in user.posts" 
+            :key="post.id" 
+            :username="user.username" 
+            :post="post" 
+            @favorite="toggleFavorite"
+          />
           
         </div>
     </div>
@@ -67,6 +73,13 @@ export default {
   methods: {
     followUser(){
       this.followers++;
+    },
+    toggleFavorite(id) {
+      
+      /**
+       * i.e. for axios call to backend for add favorite count etc.
+       */
+      console.log(`Favorited post #${id}`);
     }
   },
   mounted() {
