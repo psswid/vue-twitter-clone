@@ -1,13 +1,13 @@
 <template>
     <div class="user-profile">
         <div class="user-profile__user-panel">
-            <h1 class="user-profile__username">@{{ user.username }}</h1>
-            <div class="user-profile__admin-badge" v-if="user.isAdmin">
+            <h1 class="user-profile__username">@{{ state.user.username }}</h1>
+            <div class="user-profile__admin-badge" v-if="state.user.isAdmin">
               Admin
             </div>
             
             <div class="user-profile__follower-count">
-                <strong>Followers: </strong> {{ followers }}
+                <strong>Followers: </strong> {{ state.followers }}
             </div>
            <CreatePostPanel 
               @add-post="addPost"
@@ -15,11 +15,10 @@
         </div>
         <div class="user-profile__posts-wrapper">
           <PostElement 
-            v-for="post in user.posts" 
+            v-for="post in state.user.posts" 
             :key="post.id" 
-            :username="user.username" 
+            :username="state.user.username" 
             :post="post" 
-            @favorite="toggleFavorite"
           />
           
         </div>
@@ -27,7 +26,7 @@
 </template>
 
 <script>
-
+import { reactive } from 'vue';
 import PostElement from './PostElement';
 import CreatePostPanel from './CreatePostPanel'
 
@@ -37,8 +36,8 @@ export default {
     PostElement,
     CreatePostPanel
   },
-  data() {
-    return {
+  setup() { 
+    const state = reactive({
       followers: 0,
       user: {
         id: 1,
@@ -58,6 +57,24 @@ export default {
           }
         ],
       }
+    });
+
+    function followUser(){
+      state.followers++;
+    }
+
+    function addPost(post) {
+      /** Some axios backend post call */
+      this.user.posts.unshift({
+        id: this.user.posts.length + 1,
+        content: post
+      });
+    }
+
+    return {
+      state,
+      addPost,
+      followUser
     }
   },
   watch: {
@@ -75,26 +92,6 @@ export default {
       return `${this.user.firstName} ${this.user.lastName}`
     },
 
-  },
-  methods: {
-    followUser(){
-      this.followers++;
-    },
-    toggleFavorite(id) {
-
-      /**
-       * i.e. for axios call to backend for add favorite count etc.
-       */
-      console.log(`Favorited post #${id}`);
-    },
-    addPost(newPostContent) {
-        console.log(newPostContent)
-        /** Some axios backend post call */
-        this.user.posts.unshift({
-          id: this.user.posts.length + 1,
-          content: newPostContent
-        })
-      }
   },
   mounted() {
     this.followUser();
