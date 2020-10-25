@@ -9,8 +9,8 @@
             <div class="user-profile__follower-count">
                 <strong>Followers: </strong> {{ followers }}
             </div>
-            <form action="" class="user-profile__create-post" @submit.prevent="createNewPost">
-              <label for="newPost"><strong>New Post</strong></label>
+            <form action="" class="user-profile__create-post" @submit.prevent="createNewPost" :class="{ '--exceeded': newPostCharacterCount > 180 }">
+              <label for="newPost"><strong>New Post</strong> ({{ newPostCharacterCount }}/180)</label>
               <textarea name="" id="newPost" cols="30" rows="10" v-model="newPostContent"></textarea>
 
               <div class="user-profile__create-post-type">
@@ -97,7 +97,10 @@ export default {
   computed: {
     fullName() {
       return `${this.user.firstName} ${this.user.lastName}`
-    }
+    },
+    newPostCharacterCount() {
+      return this.newPostContent.length;
+    }  
   },
   methods: {
     followUser(){
@@ -160,10 +163,21 @@ export default {
       }
 
       .user-profile__create-post {
-        border-top: 1px solid black;
         padding-top: 20px;
         display: flex;
         flex-direction: column;
+
+        &.--exceeded {
+          color: red;
+          border-color: red;
+
+          button {
+            background-color: red;
+            border: none;
+            color: white;
+
+          }
+        }
       }
   
   
