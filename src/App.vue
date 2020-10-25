@@ -1,5 +1,13 @@
 <template>
   <div id="app">
+    <nav>
+      <div class="navigation__logo">
+        Vue Twitter Clone
+      </div>
+      <div class="navigation__user">
+        {{ user.username }}
+      </div>
+    </nav>
     <UserProfile/>
   </div>
 </template>
@@ -12,6 +20,13 @@ export default {
   name: 'App',
   components: {
     UserProfile
+  },
+  data() {
+    return {
+      user: {
+        username: '_RomanMotopompa'
+      }
+    }
   }
 }
 </script>
@@ -22,6 +37,25 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  background-color: #f3f5fa;
+  min-height: 100vh;
+  background-color: #F3F5FA;
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 5%;
+    background-color: deeppink;
+    color: white;
+
+    .navigation__logo {
+      font-weight: bold;
+      font-size: 24px;
+    }
+    
+    .navigation__user {
+      font-weight: bold;
+    }
+  }
 }
 </style>

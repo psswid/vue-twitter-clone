@@ -9,22 +9,9 @@
             <div class="user-profile__follower-count">
                 <strong>Followers: </strong> {{ followers }}
             </div>
-            <form action="" class="user-profile__create-post" @submit.prevent="createNewPost" :class="{ '--exceeded': newPostCharacterCount > 180 }">
-              <label for="newPost"><strong>New Post</strong> ({{ newPostCharacterCount }}/180)</label>
-              <textarea name="" id="newPost" cols="30" rows="10" v-model="newPostContent"></textarea>
-
-              <div class="user-profile__create-post-type">
-                <label for="newPostType"><strong>Type</strong></label>
-                <select name="" id="newPostType" v-model="selectedTPostType">
-                  <option :value="option.value" v-for="(option, index) in postTypes" :key="index">
-                    {{ option.name }}
-                  </option>
-                </select>
-              </div>
-              <button>
-                Send post
-              </button>
-            </form>
+           <CreatePostPanel 
+              @add-post="addPost"
+           />
         </div>
         <div class="user-profile__posts-wrapper">
           <PostElement 
@@ -42,27 +29,16 @@
 <script>
 
 import PostElement from './PostElement';
+import CreatePostPanel from './CreatePostPanel'
 
 export default {
   name: 'UserProfile',
   components: {
-    PostElement
+    PostElement,
+    CreatePostPanel
   },
   data() {
     return {
-      newPostContent: '',
-      selectedPostType: 'instant',
-
-      postTypes: [
-        {
-          value: 'draft',
-          name: 'Draft'
-        },
-        {
-          value: 'instant',
-          name: 'Instant Post'
-        },
-      ],
       followers: 0,
       user: {
         id: 1,
@@ -98,9 +74,7 @@ export default {
     fullName() {
       return `${this.user.firstName} ${this.user.lastName}`
     },
-    newPostCharacterCount() {
-      return this.newPostContent.length;
-    }  
+
   },
   methods: {
     followUser(){
@@ -113,17 +87,14 @@ export default {
        */
       console.log(`Favorited post #${id}`);
     },
-    createNewPost() {
-      if (this.newPostContent && this.selectedPostType !== 'draft') {
-
+    addPost(newPostContent) {
+        console.log(newPostContent)
         /** Some axios backend post call */
         this.user.posts.unshift({
           id: this.user.posts.length + 1,
-          content: this.newPostContent
+          content: newPostContent
         })
-        this.newPostContent = '';
       }
-    }
   },
   mounted() {
     this.followUser();
@@ -133,64 +104,38 @@ export default {
 
 <style lang="scss" scoped>
 .user-profile {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    width: 100%;
-    padding: 50px 5%;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-gap: 50px;
+  padding: 50px 5%;
 
   .user-profile__user-panel {
-      display: flex;
-      flex-direction: column;
-      margin-right: 50px;
-      padding: 20px;
-      background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #DFE3E8;
+    margin-bottom: auto;
+
+    h1 {
+      margin: 0;
+    }
+
+    .user-profile__admin-badge {
+      background: rebeccapurple;
+      color: white;
       border-radius: 5px;
-      border: 1px solid #dfe3e8;
-
-    
-      h1 {
-          margin: 0;
-      }
-
-      .user-profile__admin-badge {
-        background: red;
-        color: white;
-        border-radius: 5px;
-        margin-right: auto;
-        padding: 0 10px;
-        font-weight: bold;
-        margin-bottom: 10px;
-      }
-
-      .user-profile__create-post {
-        padding-top: 20px;
-        display: flex;
-        flex-direction: column;
-
-        &.--exceeded {
-          color: red;
-          border-color: red;
-
-          button {
-            background-color: red;
-            border: none;
-            color: white;
-
-          }
-        }
-      }
-  
-  
-    .user-profile__create-wrapper {
-      display: grid;
-      grid-gap: 10px;
+      margin-right: auto;
+      padding: 0 10px;
+      font-weight: bold;
     }
   }
+
+  .user-profile__posts-wrapper {
+    display: grid;
+    grid-gap: 10px;
+    margin-bottom: auto;
+  }
 }
-
-
-
-
-
-
 </style>
