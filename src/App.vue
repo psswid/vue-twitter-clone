@@ -5,7 +5,7 @@
         Vue Twitter Clone
       </div>
       <div class="navigation__user">
-        {{ user.username }}
+        {{ state.user.username }}
       </div>
     </nav>
     <UserProfile/>
@@ -14,6 +14,7 @@
 
 <script>
 
+import { reactive } from 'vue';
 import UserProfile from "./components/UserProfile";
 
 export default {
@@ -21,13 +22,17 @@ export default {
   components: {
     UserProfile
   },
-  data() {
-    return {
+  setup() {
+    const state = reactive({
       user: {
         username: '_RomanMotopompa'
       }
+    });
+
+    return {
+      state
     }
-  }
+  },
 }
 </script>
 
