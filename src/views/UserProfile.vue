@@ -26,9 +26,11 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
-import PostElement from './PostElement';
-import CreatePostPanel from './CreatePostPanel'
+import { reactive, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { users } from '../assets/users';
+import PostElement from '../components/PostElement';
+import CreatePostPanel from '../components/CreatePostPanel'
 
 export default {
   name: 'UserProfile',
@@ -37,26 +39,15 @@ export default {
     CreatePostPanel
   },
   setup() { 
+    const route = useRoute();
+    const userId = computed(() => route.params.userId);
+
+
+
+
     const state = reactive({
       followers: 0,
-      user: {
-        id: 1,
-        username: "_RomanMotopompa",
-        firstName: "Roman",
-        lastName: "Motopompa",
-        email: "motopompa@gmail.com",
-        isAdmin: true,
-        posts: [
-          {
-            id: 1,
-            content: "lorem ipsum"
-          },
-          {
-            id: 2,
-            content: "Michał Białek kończył nocną zmianę..."
-          }
-        ],
-      }
+      user: users[userId.value - 1] || users[0]
     });
 
     function followUser(){
@@ -74,7 +65,8 @@ export default {
     return {
       state,
       addPost,
-      followUser
+      followUser,
+      userId
     }
   },
   watch: {
